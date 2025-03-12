@@ -52,60 +52,31 @@ int main(){
     while(1){
         int floor = elevio_floorSensor();
         min_heis.floor = floor;
-        //printf("Next_floor: %d, Last floor: %d , last_directon: %d  \n",min_heis.next_floor, min_heis.last_floor, min_heis.last_direction);
+        if (floor != -1){
+            min_heis.last_floor = floor;
+        }
         time_t current_time = time(NULL);
         stopped_pressed(&min_heis, order_list, up_buttons, down_button, cab_buttons, &stop_time_stopp_button, current_time);
         arrival_at_destination_floor(&min_heis, floor, current_time, &stop_time, order_list, up_buttons, down_button, cab_buttons);
 
-
-
-        
-        //printf("  Order etter ordetprotocol: %d ", up_buttons[1]);
         order_button_pressed(up_buttons, down_button, cab_buttons, order_list, &min_heis);
         
-      
         order_button_lights(up_buttons, down_button, cab_buttons);
        
-
-        if (floor != -1){
-            min_heis.last_floor = floor;
-        }
-
-        //printf("Next_floor %d\n",min_heis.next_floor);
-        
         floor_incicator_light(min_heis.floor);
-        
         stop_button_light(&min_heis);
         door_open_light(&min_heis);
         
-        if(floor == 0){
-            //elevio_motorDirection(DIRN_UP);
-            //min_heis.direction = 1;
-        }
-
-        if(floor == N_FLOORS-1){
-            //elevio_motorDirection(DIRN_DOWN);
-            //min_heis.direction = -1;
-        };
         cab_button_pressed(cab_buttons, order_list);
         
         destinatin_floor(order_list, &min_heis);
         
-        
-        //printf("  Order Main: %d \n", up_buttons[1]);
-
         order_protocol( order_list, up_buttons, down_button, cab_buttons, &min_heis);
         
         motor_up_down(&min_heis);
         
         obstruction_activated(&min_heis, current_time, &stop_time_obstruction, order_list,up_buttons, down_button);
         
-
-        
-        //if(elevio_stopButton()){
-        //    elevio_motorDirection(DIRN_STOP);
-        //    break;
-        //}
         nanosleep(&(struct timespec){0, 20}, NULL);
         
     }
